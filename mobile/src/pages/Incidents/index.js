@@ -22,7 +22,7 @@ export default function Incidents() {
         navigation.navigate('Detail', { incident });
     }
 
-    async function loadIncident(){
+    async function loadIncidents(){
       if(loading){
         return;
       }
@@ -36,15 +36,15 @@ export default function Incidents() {
         params: { page }
       });
 
-      setIncidents([... incidents, ... response.data]);
-      setTotal(response.headers['X-Total-Count']);
-      setLoading(false);
+      setIncidents([...incidents, ...response.data]); //erro aqui
+      setTotal(response.headers['x-total-count']);
       setPage(page + 1);
+      setLoading(false);
     }
 
     useEffect(() => {
-      loadIncident();
-    }, []);
+      loadIncidents();
+      }, []);
 
   return (
     <View style={styles.container}>
@@ -65,18 +65,22 @@ export default function Incidents() {
             style={styles.incidentsList}
             keyExtractor={incident => String(incident.id)}
             showsVerticalScrollIndicator={false}
-            onEndReached={loadIncident}
+            onEndReached={loadIncidents}
             onEndReachedThreshold={0.2}
-            renderItem={({item : incident}) => (
+            renderItem={({ item: incident }) => (
               <View style={styles.incident}>
                 <Text style={styles.incidentProperty}>ONG:</Text>
-                <Text style={styles.incidentValue}>{incident.name}</Text>
+                <Text style={styles.incidentValue}>{incident.nome}</Text>
       
                 <Text style={styles.incidentProperty}>CASO:</Text>
                 <Text style={styles.incidentValue}>{incident.title}</Text>
       
                 <Text style={styles.incidentProperty}>VALOR:</Text>
-                <Text style={styles.incidentValue}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(incident.value)}</Text>
+                <Text style={styles.incidentValue}>{
+                    Intl.NumberFormat('pt-BR', {
+                      style: 'currency', 
+                      currency: 'BRL'}).format(incident.value)}
+                </Text>
       
                 <TouchableOpacity 
                   style={styles.detailsButton} 
